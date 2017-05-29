@@ -1,0 +1,6 @@
+{
+  "name": "pouch",
+  "short_name": "pouch",
+  "start_url": "/",
+  "display": "standalone"
+}
