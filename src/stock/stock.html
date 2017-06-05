@@ -1,0 +1,57 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-sync.html">
+<link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-index.html">
+<link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-query.html">
+
+<dom-module id="stock-ele">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <!--<app-pouchdb-sync-->
+            <!--src="https://toobstar.cloudant.com/stock_bhp"-->
+            <!--target="local_bhp">-->
+    <!--</app-pouchdb-sync>-->
+
+    <app-pouchdb-index
+            db-name="local_bhp"
+            fields='["date"]'>
+
+    <app-pouchdb-query
+            id="query"
+            db-name="local_bhp"
+            selector="ticker $exists true"
+            fields='["_id", "id", "ticker", "close", "high", "low", "date"]'
+            sort='["_id"]'
+            data="{{data}}">
+    </app-pouchdb-query>
+
+    <div class="local_bhp">
+      <template is="dom-repeat" items="[[data]]" as="note">
+        <div>
+          <h3>[[note.ticker]]</h3>
+          Date [[note.date]]
+          Close [[note.close]]
+          High [[note.high]]
+          Low [[note.low]]
+        </div>
+      </template>
+    </div>
+
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class StockEle extends Polymer.Element {
+      static get is() { return 'stock-ele'; }
+    }
+
+    window.customElements.define(StockEle.is, StockEle);
+  </script>
+</dom-module>
