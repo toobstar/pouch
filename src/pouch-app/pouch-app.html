@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../stock/stock.html">
 
 <dom-module id="pouch-app">
   <template>
@@ -7,24 +8,42 @@
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]!</h2>
+
+    <input type="text" id="tickerId" value="{{ticker}}">
+    <div title="Add" on-click="addTicker">
+      add
+    </div>
+
+    <template is="dom-repeat" items="{{tickers}}" as="ticker">
+        <stock-ele ticker="{{ticker}}"></stock-ele>
+    </template>
+
   </template>
 
   <script>
-    /**
-     * @customElement
-     * @polymer
-     */
     class PouchApp extends Polymer.Element {
+
       static get is() { return 'pouch-app'; }
       static get properties() {
         return {
-          prop1: {
-            type: String,
-            value: 'pouch-app'
+          tickers: {
+            type: Array,
+            value: ['bhp']
           }
         };
       }
+
+//      constructor() {
+//        super();
+//        this.owner = 'xyz';
+//      }
+      
+      addTicker(){
+        let textTitle = this.$.tickerId.value;
+        this.push('tickers', textTitle);
+        this.$.tickerId.value = "";
+      }
+
     }
 
     window.customElements.define(PouchApp.is, PouchApp);

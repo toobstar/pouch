@@ -15,40 +15,48 @@
     <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 
     <link rel="import" href="/src/pouch-app/pouch-app.html">
-    <link rel="import" href="/src/stock/stock.html">
+
   </head>
   <body>
-    <!--<pouch-app></pouch-app>-->
-    <stock-ele></stock-ele>
+    <pouch-app></pouch-app>
 
     <script>
-      PouchDB.debug.enable('*');
+//      PouchDB.debug.enable('*');
 
-      var localDB = new PouchDB('local_bhp');
-      var remoteDB = new PouchDB('https://toobstar.cloudant.com/stock_bhp');
+      var universe = ['bhp','cba'];
+
+      function processTicker(ticker) {
+        var localDB = new PouchDB('local_' + ticker);
+        var remoteDB = new PouchDB('https://toobstar.cloudant.com/stock_' + ticker);
 
 //      db.info().then(function (info) {
 //        console.log(info);
 //      })
 
-      localDB.replicate.from(remoteDB, {live: false}).on('change', function (change) {
+        localDB.replicate.from(remoteDB, {live: false}).on('change', function (change) {
 //      remoteDB.replicate.to(localDB, {live: true}).on('change', function (change) {
-        console.log("change", change);
-      }).on('error', function (err) {
-        console.log("err-replicate", err);
-      });
-
-      function find(i) {
-        localDB.find({
-          selector: {
-            date: {$gte: null}
-          },
-          sort: ['date']
-        }).then(function (result) {
-          console.log("FIND_"+i, result);
-        }).catch(function (err) {
-          console.log(err);
+          console.log("change", change);
+        }).on('error', function (err) {
+          console.log("err-replicate", err);
         });
+      }
+
+      universe.forEach(processTicker);
+
+
+
+
+//      function find(i) {
+//        localDB.find({
+//          selector: {
+//            date: {$gte: null}
+//          },
+//          sort: ['date']
+//        }).then(function (result) {
+//          console.log("FIND_"+i, result);
+//        }).catch(function (err) {
+//          console.log(err);
+//        });
 
 //        localDB.find({
 //          fields: ['_id', 'close'],
@@ -58,16 +66,16 @@
 //        }).catch(function (err) {
 //          console.log(err);
 //        });
-      }
+//      }
 
-      find(1);
-      find(2);
-
-      localDB.createIndex({
-        index: {fields: ['date']}
-      });
-
-      find(3);
+//      find(1);
+//      find(2);
+//
+//      localDB.createIndex({
+//        index: {fields: ['date']}
+//      });
+//
+//      find(3);
 
 
     </script>
