@@ -25,21 +25,40 @@
             <!--fields='["date"]'>-->
 
     <app-pouchdb-query
-            id="query"
+            id="priceQuery"
             db-name="local_{{ticker}}"
             selector="date $exists true"
             fields='["_id", "id", "close", "date"]'
             sort='["_id"]'
-            data="{{data}}">
+            data="{{priceData}}">
+    </app-pouchdb-query>
+
+    <app-pouchdb-query
+            id="dividendQuery"
+            db-name="local_{{ticker}}"
+            selector="ex $exists true"
+            fields='["_id", "id", "ex", "pay", "rate", "franking"]'
+            sort='["_id"]'
+            data="{{dividendData}}">
     </app-pouchdb-query>
 
     <div class="">
-      <template is="dom-repeat" items="[[data]]" as="note">
+      <template is="dom-repeat" items="[[priceData]]" as="note">
         <div>
           Date [[note.date]]
           Close [[note.close]]
         </div>
       </template>
+
+      <template is="dom-repeat" items="[[dividendData]]" as="note">
+        <div>
+          Ex [[note.ex]]
+          Pay [[note.pay]]
+          Rate [[note.rate]]
+          Franking [[note.franking]]
+        </div>
+      </template>
+
     </div>
 
   </template>
