@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-sync.html">
 <link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-index.html">
 <link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-query.html">
+<link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-document.html">
 
 <dom-module id="stock-ele">
   <template>
@@ -24,38 +25,56 @@
             <!--db-name="local_{{ticker}}"-->
             <!--fields='["date"]'>-->
 
-    <app-pouchdb-query
-            id="priceQuery"
-            db-name="local_{{ticker}}"
-            selector="date $exists true"
-            fields='["_id", "id", "close", "date"]'
-            sort='["_id"]'
-            data="{{priceData}}">
-    </app-pouchdb-query>
+    <!--<app-pouchdb-query-->
+            <!--id="priceQuery"-->
+            <!--db-name="local_{{ticker}}"-->
+            <!--selector="date $exists true"-->
+            <!--fields='["_id", "id", "close", "date"]'-->
+            <!--sort='["_id"]'-->
+            <!--data="{{priceData}}">-->
+    <!--</app-pouchdb-query>-->
 
-    <app-pouchdb-query
-            id="dividendQuery"
+    <!--<app-pouchdb-query-->
+            <!--id="priceQuery"-->
+            <!--db-name="local_{{ticker}}"-->
+            <!--selector="priceArray $exists true"-->
+            <!--data="{{priceData}}">-->
+    <!--</app-pouchdb-query>-->
+
+    <app-pouchdb-document
             db-name="local_{{ticker}}"
-            selector="ex $exists true"
-            fields='["_id", "id", "ex", "pay", "rate", "franking"]'
-            sort='["_id"]'
-            data="{{dividendData}}">
-    </app-pouchdb-query>
+            doc-id="priceData"
+            data="{{priceData}}"></app-pouchdb-document>
+
+    <app-pouchdb-document
+            db-name="local_{{ticker}}"
+            doc-id="dividendData"
+            data="{{dividendData}}"></app-pouchdb-document>
+
+    <!--<app-pouchdb-query-->
+            <!--id="dividendQuery"-->
+            <!--db-name="local_{{ticker}}"-->
+            <!--selector="ex $exists true"-->
+            <!--fields='["_id", "id", "ex", "pay", "rate", "franking"]'-->
+            <!--sort='["_id"]'-->
+            <!--data="{{dividendData}}">-->
+    <!--</app-pouchdb-query>-->
 
     <div class="">
-      <template is="dom-repeat" items="[[priceData]]" as="note">
-        <div>
-          Date [[note.date]]
-          Close [[note.close]]
-        </div>
-      </template>
 
-      <template is="dom-repeat" items="[[dividendData]]" as="note">
+      <template is="dom-repeat" items="[[dividendData.dataArray]]" as="note">
         <div>
           Ex [[note.ex]]
           Pay [[note.pay]]
           Rate [[note.rate]]
           Franking [[note.franking]]
+        </div>
+      </template>
+
+      <template is="dom-repeat" items="[[priceData.dataArray]]" as="note">
+        <div>
+          Date [[note.date]]
+          Close [[note.close]]
         </div>
       </template>
 
