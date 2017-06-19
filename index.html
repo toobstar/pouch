@@ -18,28 +18,41 @@
 
   </head>
   <body>
+    <a href="javascript:replicate(loc,rem)">replicate</a>
+
     <pouch-app></pouch-app>
 
     <script>
-      PouchDB.debug.enable('*');
-//      PouchDB.debug.disable('*');
+//      PouchDB.debug.enable('*');
+      PouchDB.debug.disable('*');
 
-      var universe = ['bhp','cba','coh','wbc','tcl'];
+      //,'cba','coh','wbc','tcl'
+      var universe = ['bhp'];
+
+      var loc;
+      var rem;
+
+      function replicate(localDB, remoteDB) {
+        localDB.replicate.from(remoteDB, {live: false}).on('change', function (change) {
+          console.log("change", change);
+        }).on('error', function (err) {
+          console.log("err-replicate", err);
+        });
+      }
 
       function processTicker(ticker) {
         var localDB = new PouchDB('local_' + ticker);
 //        var remoteDB = new PouchDB('https://toobstar.cloudant.com/stock_' + ticker);
         var remoteDB = new PouchDB('https://hologratchartheshourster:51feeb82b80d8b171e69ad369924d581fcb5afbd@toobstar.cloudant.com/stock_' + ticker);
 
+        loc = localDB;
+        rem = remoteDB;
+
         localDB.info().then(function (info) {
           console.log(info);
         })
 
-        localDB.replicate.from(remoteDB, {live: false}).on('change', function (change) {
-          console.log("change", change);
-        }).on('error', function (err) {
-          console.log("err-replicate", err);
-        });
+        replicate(localDB, remoteDB);
       }
 
       universe.forEach(processTicker);
