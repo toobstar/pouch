@@ -28,16 +28,11 @@
         return {
           tickers: {
             type: Array,
-            value: ['wbc']
+            value: ['bhp']
           }
         };
       }
 
-//      constructor() {
-//        super();
-//        this.owner = 'xyz';
-//      }
-      
       addTicker(){
         let textTitle = this.$.tickerId.value;
         this.push('tickers', textTitle);
