@@ -23,11 +23,11 @@
     <pouch-app></pouch-app>
 
     <script>
-//      PouchDB.debug.enable('*');
-      PouchDB.debug.disable('*');
+      PouchDB.debug.enable('*');
+//      PouchDB.debug.disable('*');
 
-      //,'cba','coh','wbc','tcl'
-      var universe = ['bhp'];
+      var universe = ['bhp','cba','coh','wbc','tcl'];
+//      var universe = ['cba'];
 
       var loc;
       var rem;
@@ -42,7 +42,6 @@
 
       function processTicker(ticker) {
         var localDB = new PouchDB('local_' + ticker);
-//        var remoteDB = new PouchDB('https://toobstar.cloudant.com/stock_' + ticker);
         var remoteDB = new PouchDB('https://hologratchartheshourster:51feeb82b80d8b171e69ad369924d581fcb5afbd@toobstar.cloudant.com/stock_' + ticker);
 
         loc = localDB;
@@ -55,30 +54,7 @@
         replicate(localDB, remoteDB);
       }
 
-      universe.forEach(processTicker);
-
-//      function find(i) {
-//        db.find({
-//          selector: {
-//            date: {$gte: null}
-//          },
-//          sort: ['date']
-//        }).then(function (result) {
-//          console.log("FIND_"+i, result);
-//        }).catch(function (err) {
-//          console.log(err);
-//        });
-//      }
-
-//      find(1);
-//      find(2);
-//
-//      db.createIndex({
-//        index: {fields: ['date']}
-//      });
-//
-//      find(3);
-
+//      universe.forEach(processTicker);
 
     </script>
 
