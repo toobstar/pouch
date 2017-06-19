@@ -1,0 +1,18 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-sync.html">
+
+<dom-module id="stock-db">
+  <template>
+    <app-pouchdb-sync
+            src="https://hologratchartheshourster:51feeb82b80d8b171e69ad369924d581fcb5afbd@toobstar.cloudant.com/stock_{{ticker}}"
+            target="local_{{ticker}}">
+    </app-pouchdb-sync>
+  </template>
+
+  <script>
+    class StockDb extends Polymer.Element {
+      static get is() { return 'stock-db'; }
+    }
+    window.customElements.define(StockDb.is, StockDb);
+  </script>
+</dom-module>

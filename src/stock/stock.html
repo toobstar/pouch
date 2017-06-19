@@ -1,7 +1,4 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-sync.html">
-<link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-index.html">
-<link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-query.html">
 <link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-document.html">
 
 <dom-module id="stock-ele">
@@ -15,11 +12,6 @@
     <h1>
       Ticker {{ticker}}
     </h1>
-
-    <app-pouchdb-sync
-            src="https://hologratchartheshourster:51feeb82b80d8b171e69ad369924d581fcb5afbd@toobstar.cloudant.com/stock_{{ticker}}"
-            target="local_{{ticker}}">
-    </app-pouchdb-sync>
 
     <app-pouchdb-document
             db-name="local_{{ticker}}"
@@ -55,10 +47,6 @@
   </template>
 
   <script>
-    /**
-     * @customElement
-     * @polymer
-     */
     class StockEle extends Polymer.Element {
       static get is() { return 'stock-ele'; }
     }
