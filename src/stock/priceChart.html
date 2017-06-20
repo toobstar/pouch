@@ -1,0 +1,81 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-document.html">
+<link rel="import" href="../../bower_components/highcharts-chart/highcharts-chart.html">
+<link rel="import" href="../../bower_components/highcharts-chart/highcharts-stock.html">
+
+<dom-module id="stock-chart">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <h1>
+      Chart {{ticker}}
+    </h1>
+
+    <highcharts-stock id="stockChart"></highcharts-stock>
+
+    <app-pouchdb-document
+            db-name="local_{{ticker}}"
+            doc-id="priceData"
+            data="{{priceData}}"></app-pouchdb-document>
+
+    <app-pouchdb-document
+            db-name="local_{{ticker}}"
+            doc-id="dividendData"
+            data="{{dividendData}}"></app-pouchdb-document>
+
+    <div class="">
+
+    </div>
+
+  </template>
+
+  <script>
+    class StockChart extends Polymer.Element {
+      static get is() { return 'stock-chart'; }
+
+//      ready() {
+//        super.ready();
+//      }
+
+      static get properties() {
+        return {
+          priceData: {
+            type: Array,
+            observer: 'priceChanged'
+          }
+        }
+      }
+
+      priceChanged(newValue, oldValue) {
+        console.log('priceChanged', newValue, oldValue);
+        if (newValue.dataArray) {
+          this.buildChart();
+        }
+      }
+
+      buildChart() {
+        console.log("buildChart");
+        var pd = this.get('priceData');
+        if (!pd.dataArray) {
+          return;
+        }
+        var dp=[];
+        pd.dataArray.forEach(function(elem) {
+          var date = moment(elem.date);
+          var close = parseFloat(elem.close);
+          dp.push([date.valueOf(),close]);
+        });
+        dp.sort(function (p1, p2) {
+          return p1[0] - p2[0];
+        });
+        this.$.stockChart.setData(dp)
+      }
+    }
+
+    window.customElements.define(StockChart.is, StockChart);
+  </script>
+</dom-module>
