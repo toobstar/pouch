@@ -6,7 +6,8 @@
     "pouchdb": "^6.2.0",
     "app-pouchdb": "PolymerElements/app-pouchdb#^2.0.0",
     "highcharts-chart": "^2.0.1",
-    "moment": "^2.18.1"
+    "moment": "^2.18.1",
+    "paper-checkbox": "^2.0.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
