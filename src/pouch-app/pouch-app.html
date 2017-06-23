@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../stock/stock.html">
 <link rel="import" href="../stock/stock-db.html">
 <link rel="import" href="../stock/priceChart.html">
@@ -11,15 +12,26 @@
       }
     </style>
 
+    <div>
+        My Stocks:
+        [[tickers]]
+        <app-localstorage-document key="tickers" data="{{tickers}}"></app-localstorage-document>
+
+    </div>
+
     <input type="text" id="tickerId" value="{{ticker}}">
     <div title="Add" on-click="addTicker">
       add
     </div>
 
     <template is="dom-repeat" items="{{tickers}}" as="ticker">
+        <div title="Add" on-click="removeTicker" data-item$="[[ticker]]">
+            remove {{ticker}}
+        </div>
         <stock-db ticker="{{ticker}}"></stock-db>
         <stock-chart ticker="{{ticker}}"></stock-chart>
         <stock-ele ticker="{{ticker}}"></stock-ele>
+
     </template>
 
   </template>
@@ -32,15 +44,27 @@
         return {
           tickers: {
             type: Array,
-            value: ['bhp']
+            value: []
           }
         };
       }
+
+//      ready(){
+//        this.addEventListener('removeTicker', this.removeTicker);
+//      }
 
       addTicker(){
         let textTitle = this.$.tickerId.value;
         this.push('tickers', textTitle);
         this.$.tickerId.value = "";
+      }
+
+      removeTicker(event) {
+        var ticker = event.target.dataset.item;
+        console.log("removeTicker1", ticker);
+        var tickerArray = this.get('tickers');
+        console.log("removeTicker2", tickerArray.indexOf(ticker));
+        this.splice('tickers', tickerArray.indexOf(ticker), 1);
       }
 
     }
