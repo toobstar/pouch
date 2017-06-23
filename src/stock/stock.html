@@ -25,22 +25,24 @@
 
     <div class="">
 
-
-      <template is="dom-repeat" items="[[priceData.dataArray]]" as="note">
-        <div>
-          Date [[note.date]]
-          Close [[note.close]]
-        </div>
-      </template>
-
-        <template is="dom-repeat" items="[[dividendData.dataArray]]" as="note">
+        <paper-checkbox on-click="toggleShow" checked>Toggle Visible</paper-checkbox>
+        <div id="dataHolder">
+          <template is="dom-repeat" items="[[priceData.dataArray]]" as="note">
             <div>
-                Ex [[note.ex]]
-                Pay [[note.pay]]
-                Rate [[note.rate]]
-                Franking [[note.franking]]
+              Date [[note.date]]
+              Close [[note.close]]
             </div>
-        </template>
+          </template>
+    
+            <template is="dom-repeat" items="[[dividendData.dataArray]]" as="note">
+                <div>
+                    Ex [[note.ex]]
+                    Pay [[note.pay]]
+                    Rate [[note.rate]]
+                    Franking [[note.franking]]
+                </div>
+            </template>
+        </div>
 
     </div>
 
@@ -49,6 +51,27 @@
   <script>
     class StockEle extends Polymer.Element {
       static get is() { return 'stock-ele'; }
+
+        static get properties() {
+            return {
+                hide: {
+                    type: Boolean,
+                    value: false
+                }
+            }
+        }
+
+        toggleShow() {
+            if (!this.hide) {
+                this.$.dataHolder.style.display = 'none';
+            }
+            else {
+                this.$.dataHolder.style.display = 'block';
+            }
+            this.hide = !this.hide;
+            console.log("toggleShow", this.hide);
+        }
+
     }
 
     window.customElements.define(StockEle.is, StockEle);

@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/app-pouchdb/app-pouchdb-document.html">
 <link rel="import" href="../../bower_components/highcharts-chart/highcharts-chart.html">
 <link rel="import" href="../../bower_components/highcharts-chart/highcharts-stock.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 
 <dom-module id="stock-chart">
   <template>
@@ -15,8 +16,6 @@
       Chart {{ticker}}
     </h1>
 
-    <highcharts-stock id="stockChart"></highcharts-stock>
-
     <app-pouchdb-document
             db-name="local_{{ticker}}"
             doc-id="priceData"
@@ -27,8 +26,9 @@
             doc-id="dividendData"
             data="{{dividendData}}"></app-pouchdb-document>
 
-    <div class="">
-
+    <paper-checkbox on-click="toggleShow" checked>Toggle Visible</paper-checkbox>
+    <div id="chartHolder">
+        <highcharts-stock id="stockChart"></highcharts-stock>
     </div>
 
   </template>
@@ -46,8 +46,23 @@
           priceData: {
             type: Array,
             observer: 'priceChanged'
+          },
+          hide: {
+            type: Boolean,
+            value: false
           }
         }
+      }
+
+      toggleShow() {
+        if (!this.hide) {
+          this.$.chartHolder.style.display = 'none';
+        }
+        else {
+          this.$.chartHolder.style.display = 'block';
+        }
+        this.hide = !this.hide;
+        console.log("toggleShow", this.hide);
       }
 
       priceChanged(newValue, oldValue) {
