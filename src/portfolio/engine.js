@@ -20,6 +20,38 @@ function tradesByStock(portfolio) {
     return tradesByStock;
 }
 
+function filterForToday(trades, dateCursor) {
+    let filtered = [];
+    trades.forEach(function (trade) {
+        if (trade.date.isSame(dateCursor)) {
+            filtered.push(trade);
+        }
+    });
+    return filtered;
+}
+
+function fetchIncome(stock, dateCursor) {
+    return 1;
+}
+function fetchPrice(stock, dateCursor) {
+    return 15;
+}
+
+function processSale(gains, openPositions, saleUnits, currentPrice) {
+    let firstPurchase = openPositions[0];
+    let unitsLeftAfterSale = firstPurchase.units + saleUnits;
+    if (unitsLeftAfterSale > 0) {
+        firstPurchase.units = firstPurchase.units + saleUnits;
+        gains.realisedGains += calcRealisedGain(realisedGains, firstPurchase.price, currentPrice);
+        return 0;
+    }
+    else { // sale matches or more than initial purchase
+        gains.realisedGains = calcRealisedGain(realisedGains, firstPurchase.price, currentPrice);
+        openPositions.shift(); // clear open position trade for this
+        let unitsRemainingToProcess = saleUnits - firstPurchase.units;
+        return unitsRemainingToProcess;
+    }
+}
 
 let today = moment();
 function calcGains(tradesForStock) {
@@ -27,40 +59,31 @@ function calcGains(tradesForStock) {
     let gainsByDay = [];
     let dateCursor = tradesForStock[0].date;
     let stock = tradesForStock[0].stock;
-    let unitsCursor = 0;
     while (dateCursor.isBefore(today)) {
-        let realisedGains = 0;
-        let currentPrice = fetchCurrentPrice(stock, dateCursor);
-        tradesForStock.forEach(function (trade) {
-            if (trade.date.isSame(dateCursor)) {
-                unitsCursor += trade.units;
-                if (trade.units > 0) {
-                    openPositions.push(trade);
-                }
-                else {
-                    let saleUnits = trade.units;
-                    let firstPurchase = openPositions[0];
-                    if (firstPurchase.units + saleUnits > 0) { // still units left over after selling now
-                        firstPurchase.units = firstPurchase.units + saleUnits;
-                        realisedGains = calcRealisedGain(realisedGains, firstPurchase.price, currentPrice);
-                    }
-                    else if (firstPurchase.units + saleUnits == 0) { // sale matches initial purchase
-                        firstPurchase.units = firstPurchase.units + saleUnits;
-                        realisedGains = calcRealisedGain(realisedGains, firstPurchase.price, currentPrice);
-                    }
-                    else { // sale more than initial purchase
-                        firstPurchase.units = firstPurchase.units + saleUnits;
-                        realisedGains = calcRealisedGain(realisedGains, firstPurchase.price, currentPrice);
+        let gains = new Gains(dateCursor, 0, 0, 0);
 
-                        let secondPurchase = openPositions[1];
-                    }
+        let priceForCursorDate = fetchPrice(stock, dateCursor);
+        let incomeForCursorDate = fetchIncome(stock, dateCursor);
+        let tradesForCursorDate = filterForToday(tradesForStock, dateCursor);
+
+        tradesForCursorDate.forEach(function (trade) {
+            if (trade.units > 0) { // purchase
+                openPositions.push(trade);
+            }
+            else { // sale
+                let saleUnits = trade.units;
+                while (saleUnits > 0 && openPositions.length > 0) {
+                    saleUnits = processSale(gains, openPositions, saleUnits, priceForCursorDate);
                 }
             }
-
         });
 
+        openPositions.forEach(function (trade) {
+            gains.unrealised += trade.units * (priceForCursorDate-trade.price);
+            gains.income += trade.units * incomeForCursorDate;
+        });
 
-        gainsByDay.push(new Gains())
+        gainsByDay.push(gains);
         dateCursor.add(1, 'days');
     }
     return gainsByDay;
@@ -76,6 +99,5 @@ function calcPortfolioGains(portfolio) {
         }
     }
 }
-
 
 calcPortfolioGains(portfolio);
